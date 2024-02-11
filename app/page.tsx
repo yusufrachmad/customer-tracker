@@ -1,66 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import Navbar from "./navbar";
-import {
-  Home as HomeIcon,
-  Text,
-  Files,
-  KeyRound,
-  Building2,
-  LogOut,
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { Sidebar, SidebarItem } from "./sidebar";
-import { Pendaftaran } from "./form_pendaftaran";
+import ClientLayout from "./components/client_layout";
+import PageHeader from "./components/page_header";
 
 export default function Home() {
-  const [active, setActive] = useState<string | null>("Beranda");
-
-  const handleClick = (text: string) => {
-    setActive(text === active ? null : text);
-  };
-
   return (
-    <div>
-      <div className="mb-[-4.8rem] relative">
-        <Navbar />
-      </div>
-      <div className="flex">
-        <Sidebar>
-          <SidebarItem
-            icon={<HomeIcon size={20} />}
-            text="Beranda"
-            active={active === "Beranda"}
-            onClick={() => handleClick("Beranda")}
-          />
-          <SidebarItem
-            icon={<Text size={20} />}
-            text="Pendaftaran"
-            active={active === "Pendaftaran"}
-            onClick={() => handleClick("Pendaftaran")}
-          />
-          <SidebarItem
-            icon={<Files size={20} />}
-            text="Riwayat"
-            active={active === "Riwayat"}
-            onClick={() => handleClick("Riwayat")}
-          />
-          <SidebarItem
-            icon={<KeyRound size={20} />}
-            text="Akun"
-            active={active === "Akun"}
-            onClick={() => handleClick("Akun")}
-          />
-          <SidebarItem
-            icon={<Building2 size={20} />}
-            text="Apotek"
-            active={active === "Apotek"}
-            onClick={() => handleClick("Apotek")}
-          />
-        </Sidebar>
-        <Pendaftaran />
-      </div>
-    </div>
+    <ClientLayout>
+      <PageHeader title="Beranda" />
+    </ClientLayout>
   );
 }
