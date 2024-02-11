@@ -10,55 +10,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Order {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  drugstoreId Int
-  drugstore   Drugstore @relation(fields: [drugstoreId], references: [id])
-  products    Product[]
-  customer    Customer @relation(fields: [customerId], references: [id])
-  customerId  Int
-  status      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
+  id_user  String     @id @unique
+  email    String     @unique
+  nama     String
   password String
   role     String
-  Order    Order[]
+  status   String
+  Apoteker Apoteker[]
+  Pengawas Pengawas[]
+  Session  Session[]
 }
 
-model Drugstore {
-  id       Int       @id @default(autoincrement())
-  name     String
-  address  String
-  phone    String
-  email    String
-  password String
-  products Product[]
-  Order    Order[]
+model Session {
+  id_session String   @id @default(uuid())
+  id_user    String
+  token      String   @unique
+  expires    DateTime
+  User       User     @relation(fields: [id_user], references: [id_user])
 }
 
-model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  price       Float
-  drugstore   Drugstore @relation(fields: [drugstoreId], references: [id])
-  drugstoreId Int
-  Order       Order?    @relation(fields: [orderId], references: [id])
-  orderId     Int?
+model Pasien {
+  id_pasien     String      @id @unique
+  nama_pasien   String
+  alamat_ktp    String
+  nama_ibu      String
+  tempat_lahir  String
+  tanggal_lahir DateTime
+  Kunjungan     Kunjungan[]
 }
 
-model Customer {
-  id       Int     @id @default(autoincrement())
-  nik      String
-  name     String
-  address  String
-  phone    String
-  Order    Order[]
+model Apoteker {
+  id_apoteker     String      @id @unique
+  id_user         String
+  nama_apoteker   String
+  sipa            String
+  stra            String
+  User            User        @relation(fields: [id_user], references: [id_user])
+  Apotek          Apotek?     @relation(fields: [apotekId_apotek], references: [id_apotek])
+  apotekId_apotek String?
+  Pelaporan       Pelaporan[]
+  Kunjungan       Kunjungan[]
+}
+
+model Pengawas {
+  id_pengawas   String @id @unique
+  id_user       String
+  nama_pengawas String
+  nip           Int
+  User          User   @relation(fields: [id_user], references: [id_user])
+}
+
+model Apotek {
+  id_apotek   String      @id @unique
+  nama_apotek String
+  alamat      String
+  Apoteker    Apoteker[]
+  Pelaporan   Pelaporan[]
+  Kunjungan   Kunjungan[]
+}
+
+model Pelaporan {
+  id_laporan         String   @id @unique
+  id_apotek          String
+  id_apoteker        String
+  jml_kunjungan      Int
+  kunjungan_berisiko Int
+  Apotek             Apotek   @relation(fields: [id_apotek], references: [id_apotek])
+  Apoteker           Apoteker @relation(fields: [id_apoteker], references: [id_apoteker])
+}
+
+model Kunjungan {
+  id_kunjungan  String   @id @unique
+  id_pasien     String
+  id_apotek     String
+  id_apoteker   String
+  tgl_kunjungan DateTime
+  tgl_resep     DateTime
+  nama_dokter   String
+  isi_resep     String
+  file_resep    String
+  alamat_faskes String
+  Pasien        Pasien   @relation(fields: [id_pasien], references: [id_pasien])
+  Apotek        Apotek   @relation(fields: [id_apotek], references: [id_apotek])
+  Apoteker      Apoteker @relation(fields: [id_apoteker], references: [id_apoteker])
 }
