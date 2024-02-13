@@ -1,6 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
-import LoginRegister from "../components/login_register";
+import LoginRegister from "../components/login/login_register";
 import { loginSchema } from "../lib/validation";
 import useZodForm from "@/app/hooks/useZodForm";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ export default function Login() {
   const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent page refresh
+    event.preventDefault();
 
     try {
       const data = {

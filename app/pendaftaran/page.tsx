@@ -9,7 +9,7 @@ export default function Pendaftaran() {
             <h1 className="text-xl font-bold">Mr. X</h1>
             <h2 className="text-sm">11112222333</h2>
           </div>
-          <div className="grid grid-cols-2 gap-y-7 gap-5 mx-20  mt-10">
+          <div className="grid grid-cols-2 gap-y-7 gap-5 mx-20 mt-10">
             <div className="col-span-1">
               <h1 className="text-l">Tanggal Kunjungan</h1>
               <input

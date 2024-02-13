@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import LoginRegister from "../components/login_register";
+import LoginRegister from "../components/login/login_register";
 import { registerSchema } from "../lib/validation";
 import useZodForm from "@/app/hooks/useZodForm";
 
