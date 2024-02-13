@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id_user  String     @id @unique
+  id       String     @id @unique
   email    String     @unique
   nama     String
   password String
@@ -23,15 +23,15 @@ model User {
 }
 
 model Session {
-  id_session String   @id @default(uuid())
-  id_user    String
-  token      String   @unique
-  expires    DateTime
-  User       User     @relation(fields: [id_user], references: [id_user])
+  id      String   @id @default(uuid())
+  id_user String
+  token   String   @unique
+  expires DateTime
+  User    User     @relation(fields: [id_user], references: [id])
 }
 
 model Pasien {
-  id_pasien     String      @id @unique
+  id            String      @id @unique
   nama_pasien   String
   alamat_ktp    String
   nama_ibu      String
@@ -41,28 +41,28 @@ model Pasien {
 }
 
 model Apoteker {
-  id_apoteker     String      @id @unique
+  id              String      @id @unique
   id_user         String
   nama_apoteker   String
   sipa            String
   stra            String
-  User            User        @relation(fields: [id_user], references: [id_user])
-  Apotek          Apotek?     @relation(fields: [apotekId_apotek], references: [id_apotek])
+  User            User        @relation(fields: [id_user], references: [id])
+  Apotek          Apotek?     @relation(fields: [apotekId_apotek], references: [id])
   apotekId_apotek String?
   Pelaporan       Pelaporan[]
   Kunjungan       Kunjungan[]
 }
 
 model Pengawas {
-  id_pengawas   String @id @unique
+  id            String @id @unique
   id_user       String
   nama_pengawas String
   nip           Int
-  User          User   @relation(fields: [id_user], references: [id_user])
+  User          User   @relation(fields: [id_user], references: [id])
 }
 
 model Apotek {
-  id_apotek   String      @id @unique
+  id          String      @id @unique
   nama_apotek String
   alamat      String
   Apoteker    Apoteker[]
@@ -76,12 +76,12 @@ model Pelaporan {
   id_apoteker        String
   jml_kunjungan      Int
   kunjungan_berisiko Int
-  Apotek             Apotek   @relation(fields: [id_apotek], references: [id_apotek])
-  Apoteker           Apoteker @relation(fields: [id_apoteker], references: [id_apoteker])
+  Apotek             Apotek   @relation(fields: [id_apotek], references: [id])
+  Apoteker           Apoteker @relation(fields: [id_apoteker], references: [id])
 }
 
 model Kunjungan {
-  id_kunjungan  String   @id @unique
+  id            String   @id @unique
   id_pasien     String
   id_apotek     String
   id_apoteker   String
@@ -91,7 +91,7 @@ model Kunjungan {
   isi_resep     String
   file_resep    String
   alamat_faskes String
-  Pasien        Pasien   @relation(fields: [id_pasien], references: [id_pasien])
-  Apotek        Apotek   @relation(fields: [id_apotek], references: [id_apotek])
-  Apoteker      Apoteker @relation(fields: [id_apoteker], references: [id_apoteker])
+  Pasien        Pasien   @relation(fields: [id_pasien], references: [id])
+  Apotek        Apotek   @relation(fields: [id_apotek], references: [id])
+  Apoteker      Apoteker @relation(fields: [id_apoteker], references: [id])
 }
