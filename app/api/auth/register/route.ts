@@ -1,11 +1,10 @@
 import { registerSchema } from "@/app/lib/validation";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/app/lib/db";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
-  const prisma = new PrismaClient();
   try {
     const data = await request.json();
 
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
     await prisma.$transaction(async (tx) => {
       await tx.user.create({
         data: {
-          id_user: userId,
+          id: userId,
           email,
           nama: nama,
           password: passwordHash,
@@ -48,7 +47,7 @@ export async function POST(request: Request) {
 
       await tx.apoteker.create({
         data: {
-          id_apoteker: "AP" + userId,
+          id: "AP" + userId,
           id_user: userId,
           stra: stra,
           sipa: sipa,
