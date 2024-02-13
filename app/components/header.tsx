@@ -11,7 +11,7 @@ export default function Header() {
             <Image src={logo} alt="Psychopharm" width={55} height={55} />
           </div>
           <div className="absolute left-0 right-0 top-0 bottom-0 z-0">
-            <div className="h-[41.5%]  bg-[#0d1282] border-l-8 border-r-8 border-[#0d1282]"></div>
+            <div className="h-[41.5%] bg-[#0d1282] border-l-8 border-r-8 border-[#0d1282]"></div>
             <div className="h-[65%] bg-[#f0de36] rounded-b-lg border-l-8 border-r-8 border-[#f0de36]"></div>
           </div>
         </div>
