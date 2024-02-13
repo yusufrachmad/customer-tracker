@@ -1,10 +1,59 @@
-import ClientLayout from "./components/client_layout";
-import PageHeader from "./components/page_header";
+import Image from "next/image";
+import Header from "./components/header";
+import { authServerSession } from "@/app/lib/auth";
+import LoginButton from "./components/beranda/login_button";
+import { Text, Files, KeyRound, Building2 } from "lucide-react";
+import Circle from "./components/beranda/circle";
 
-export default function Home() {
+interface User {
+  nama: string;
+  role: string;
+}
+
+export default async function Home() {
+  const logo = require("@/public/psychopharm.png").default;
+  const session = (await authServerSession()) as User;
   return (
-    <ClientLayout>
-      <PageHeader title="Beranda" />
-    </ClientLayout>
+    <>
+      <Header />
+      <div className="flex justify-end items-center pt-10 mr-32">
+        <p className="text-md font-bold">Selamat Datang, {session.nama}!</p>
+        <LoginButton />
+      </div>
+      <div className="flex flex-col justify-center items-center mt-10">
+        <div className="flex flex-col">
+          <Image src={logo} alt="Psychopharm" width={120} height={120} />
+        </div>
+        <div
+          className={`flex flex-col grid ${
+            session?.role === "dinkes" ? "xl:grid-cols-4" : "xl:grid-cols-3"
+          } lg:grid-cols-2 gap-x-52 gap-y-10 mt-24`}
+        >
+          <Circle
+            title="Pendaftaran"
+            icon={<Text size={80} strokeWidth={0.75} />}
+            colors={["#f0de36", "bg-yellow-300", "#b3bbf5"]}
+          />
+          <Circle
+            title="Riwayat"
+            icon={<Files size={80} strokeWidth={1.5} color="white" />}
+            colors={["#0d1282", "bg-blue-900"]}
+          />
+
+          {session?.role === "dinkes" && (
+            <Circle
+              title="Pelaporan"
+              icon={<Building2 size={80} strokeWidth={1.5} color="white" />}
+              colors={["#d71313", "bg-red-700"]}
+            />
+          )}
+          <Circle
+            title={session?.role === "apoteker" ? "Akun" : "Verifikasi Akun"}
+            icon={<KeyRound size={80} strokeWidth={1.5} />}
+            colors={["#d9d9d9", "bg-gray-200"]}
+          />
+        </div>
+      </div>
+    </>
   );
 }
