@@ -16,11 +16,18 @@ export async function POST(request: Request) {
       });
     }
 
-    const { email, password, nama, stra, sipa } = result.data;
+    const { email, password, nama, stra, sipa, nama_apotek, alamat } =
+      result.data;
 
     const user = await prisma.user.findUnique({
       where: {
         email,
+      },
+    });
+
+    const apotek = await prisma.apotek.findFirst({
+      where: {
+        nama_apotek,
       },
     });
 
@@ -30,8 +37,15 @@ export async function POST(request: Request) {
       });
     }
 
+    if (apotek !== null) {
+      return NextResponse.json({
+        error: "Apotek already exist with this name",
+      });
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
     const userId = await bcrypt.hash(randomUUID(), 5);
+    const apotekId = await bcrypt.hash(nama_apotek, 10);
 
     await prisma.$transaction(async (tx) => {
       await tx.user.create({
@@ -45,6 +59,14 @@ export async function POST(request: Request) {
         },
       });
 
+      await tx.apotek.create({
+        data: {
+          id: apotekId,
+          nama_apotek: nama_apotek,
+          alamat: alamat,
+        },
+      });
+
       await tx.apoteker.create({
         data: {
           id: "AP" + userId,
@@ -52,6 +74,7 @@ export async function POST(request: Request) {
           stra: stra,
           sipa: sipa,
           nama_apoteker: nama,
+          apotekId_apotek: apotekId,
         },
       });
     });
