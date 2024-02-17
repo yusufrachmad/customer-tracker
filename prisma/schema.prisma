@@ -33,6 +33,7 @@ model Session {
 model Pasien {
   id            String      @id @unique
   nama_pasien   String
+  nik           String
   alamat_ktp    String
   nama_ibu      String
   tempat_lahir  String
@@ -81,17 +82,17 @@ model Pelaporan {
 }
 
 model Kunjungan {
-  id            String   @id @unique
-  id_pasien     String
-  id_apotek     String
-  id_apoteker   String
-  tgl_kunjungan DateTime
-  tgl_resep     DateTime
-  nama_dokter   String
-  isi_resep     String
-  file_resep    String
-  alamat_faskes String
-  Pasien        Pasien   @relation(fields: [id_pasien], references: [id])
-  Apotek        Apotek   @relation(fields: [id_apotek], references: [id])
-  Apoteker      Apoteker @relation(fields: [id_apoteker], references: [id])
+  id               String   @id @unique
+  id_pasien        String
+  id_apotek        String
+  id_apoteker      String
+  tgl_kunjungan    DateTime
+  tgl_resep        DateTime
+  nama_dokter      String
+  file_penyerahan  String
+  alamat_faskes    String
+  status_keaktifan String
+  Pasien           Pasien   @relation(fields: [id_pasien], references: [id])
+  Apotek           Apotek   @relation(fields: [id_apotek], references: [id])
+  Apoteker         Apoteker @relation(fields: [id_apoteker], references: [id])
 }
