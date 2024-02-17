@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import Header from "../header";
+import Header from "./header";
 import Image from "next/image";
 
 export default function LoginRegister({
@@ -31,7 +31,7 @@ export default function LoginRegister({
       >
         <div
           className={`flex ${
-            pathname === "/login" ? "pt-36" : "pt-28"
+            pathname === "/login" ? "pt-36" : "pt-[6.5rem]"
           } justify-center`}
         >
           <div className="flex flex-col items-center">
