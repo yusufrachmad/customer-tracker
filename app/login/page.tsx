@@ -1,16 +1,20 @@
 "use client";
 import { signIn } from "next-auth/react";
-import LoginRegister from "../components/login/login_register";
+import LoginRegister from "../components/login_register";
 import { loginSchema } from "../lib/validation";
 import useZodForm from "@/app/hooks/useZodForm";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
   const { formState, register, setError } = useZodForm(loginSchema);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const data = {
@@ -24,6 +28,7 @@ export default function Login() {
       });
 
       if (res?.error) {
+        setIsSubmitting(false);
         setError("root", {
           message: res.error,
         });
@@ -31,6 +36,7 @@ export default function Login() {
         router.push("/");
       }
     } catch (error: any) {
+      setIsSubmitting(false);
       setError("root", {
         message: error?.message,
       });
@@ -81,8 +87,9 @@ export default function Login() {
               <button
                 className="bg-[#0d1282] text-white items-center w-40 h-10 rounded-3xl mt-4 hover:bg-blue-900"
                 type="submit"
+                disabled={isSubmitting}
               >
-                Masuk
+                {isSubmitting ? "Loading..." : "Masuk"}
               </button>
             </div>
           </form>
