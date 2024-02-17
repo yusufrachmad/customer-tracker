@@ -4,6 +4,7 @@ import { authServerSession } from "@/app/lib/auth";
 import LoginButton from "./components/beranda/login_button";
 import { Text, Files, KeyRound, Building2 } from "lucide-react";
 import Circle from "./components/beranda/circle";
+import Kunjungan from "./components/beranda/kunjungan";
 
 interface User {
   nama: string;
@@ -32,28 +33,29 @@ export default async function Home() {
           <Circle
             title="Pendaftaran"
             icon={<Text size={80} strokeWidth={0.75} />}
-            colors={["#f0de36", "bg-yellow-300", "#b3bbf5"]}
+            colors={["bg-[#f0de36]", "hover:bg-yellow-300", "bg-[#b3bbf5]"]}
           />
           <Circle
             title="Riwayat"
             icon={<Files size={80} strokeWidth={1.5} color="white" />}
-            colors={["#0d1282", "bg-blue-900"]}
+            colors={["bg-[#0d1282]", "hover:bg-blue-800"]}
           />
 
           {session?.role === "dinkes" && (
             <Circle
               title="Pelaporan"
               icon={<Building2 size={80} strokeWidth={1.5} color="white" />}
-              colors={["#d71313", "bg-red-700"]}
+              colors={["bg-[#d71313]", "hover:bg-red-700"]}
             />
           )}
           <Circle
             title={session?.role === "apoteker" ? "Akun" : "Verifikasi Akun"}
             icon={<KeyRound size={80} strokeWidth={1.5} />}
-            colors={["#d9d9d9", "bg-gray-200"]}
+            colors={["bg-[#d9d9d9]", "hover:bg-gray-200"]}
           />
         </div>
       </div>
+      <Kunjungan />
     </>
   );
 }
