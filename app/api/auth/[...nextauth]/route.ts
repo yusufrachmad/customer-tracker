@@ -41,7 +41,13 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            throw new Error("User account does not exist");
+            throw new Error("User tidak ditemukan");
+          }
+
+          if (user.role === "apoteker" && user.status !== "terverifikasi") {
+            throw new Error(
+              "User belum terverifikasi. Silakan menghubungi dinkes"
+            );
           }
 
           const passwordsMatch = await bcrypt.compare(
@@ -50,7 +56,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!passwordsMatch) {
-            throw new Error("Password is not correct");
+            throw new Error("Password salah");
           }
 
           return user as any;
@@ -59,7 +65,7 @@ export const authOptions: NextAuthOptions = {
             error instanceof PrismaClientInitializationError ||
             error instanceof PrismaClientKnownRequestError
           ) {
-            throw new Error("System error. Please contact support");
+            throw new Error("Sistem error. Silahkan hubungi admin.");
           }
 
           throw error;
