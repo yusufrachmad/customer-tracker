@@ -14,13 +14,17 @@ export default function Circle({
   const handleClick = (text: string) => {
     router.push(`/${text.toLowerCase()}`);
   };
-
-  const style1 = `flex border rounded-full justify-center bg-${colors[0]} shadow-2xl hover:cursor-pointer hover:${colors[1]}`;
-  const style2 = `flex justify-center items-center w-24 h-24 bg-${colors[2]} rounded-xl m-11`;
   return (
     <div className="col-span-1">
-      <div className={style1} onClick={() => handleClick(title)}>
-        <div className={style2}>{icon}</div>
+      <div
+        className={`flex border rounded-full justify-center ${colors[0]} shadow-2xl hover:cursor-pointer ${colors[1]}`}
+        onClick={() => handleClick(title)}
+      >
+        <div
+          className={`flex justify-center items-center w-24 h-24 ${colors[2]} rounded-xl m-11`}
+        >
+          {icon}
+        </div>
       </div>
       <div className="flex justify-center mt-10 font-bold">{title}</div>
     </div>
