@@ -17,6 +17,19 @@ const registerSchema = z.object({
     .string()
     .min(6, "Password minimal terdiri dari 6 karakter")
     .default(""),
+  alamat: z.string().min(5, "Alamat harus diisi").default(""),
+  nama_apotek: z.string().min(5, "Nama Apotek harus diisi").default(""),
 });
 
-export { registerSchema, loginSchema, z };
+const patientRegisterSchema = z.object({
+  nama_pasien: z.string().min(2, "Nama hasur diisi").default(""),
+  nik: z.string().min(5, "NIK harus diisi").default(""),
+  nama_ibu: z.string().min(5, "Nama Ibu harus diisi").default(""),
+  tempat_lahir: z.string().min(2, "Tempat lahir harus diisi").default(""),
+  tanggal_lahir: z
+    .date()
+    .min(new Date(1900, 1, 1), "Tanggal lahir tidak valid"),
+  alamat: z.string().min(5, "Alamat harus diisi").default(""),
+});
+
+export { registerSchema, loginSchema, patientRegisterSchema, z };
