@@ -45,9 +45,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           if (user.role === "apoteker" && user.status !== "terverifikasi") {
-            throw new Error(
-              "User belum terverifikasi. Silakan menghubungi dinkes"
-            );
+            throw new Error("not-verified");
           }
 
           const passwordsMatch = await bcrypt.compare(
