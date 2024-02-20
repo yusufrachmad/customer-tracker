@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id       String     @id @unique
-  email    String     @unique
-  nama     String
-  password String
-  role     String
-  status   String
-  Apoteker Apoteker[]
-  Pengawas Pengawas[]
-  Session  Session[]
+  id                      String                    @id @unique
+  email                   String                    @unique
+  password                String
+  nama                    String
+  role                    String
+  status                  String
+  Apoteker                Apoteker[]
+  Pengawas                Pengawas[]
+  RiwayatChangesKunjungan RiwayatChangesKunjungan[]
+  Session                 Session[]
 }
 
 model Session {
@@ -33,25 +31,29 @@ model Session {
 model Pasien {
   id            String      @id @unique
   nama_pasien   String
-  nik           String
   alamat_ktp    String
   nama_ibu      String
   tempat_lahir  String
-  tanggal_lahir DateTime
+  tanggal_lahir DateTime    @db.Date
+  nik           String
+  id_apotek     String
+  status        String
+  tgl_nonaktif  DateTime?   @db.Date
   Kunjungan     Kunjungan[]
+  Apotek        Apotek      @relation(fields: [id_apotek], references: [id], map: "Pasien_apotekId_fkey")
 }
 
 model Apoteker {
-  id              String      @id @unique
-  id_user         String
-  nama_apoteker   String
-  sipa            String
-  stra            String
-  User            User        @relation(fields: [id_user], references: [id])
-  Apotek          Apotek?     @relation(fields: [apotekId_apotek], references: [id])
-  apotekId_apotek String?
-  Pelaporan       Pelaporan[]
-  Kunjungan       Kunjungan[]
+  id            String      @id @unique
+  id_user       String
+  nama_apoteker String
+  sipa          String
+  stra          String
+  id_apotek     String
+  Apotek        Apotek      @relation(fields: [id_apotek], references: [id])
+  User          User        @relation(fields: [id_user], references: [id])
+  Kunjungan     Kunjungan[]
+  Pelaporan     Pelaporan[]
 }
 
 model Pengawas {
@@ -67,8 +69,9 @@ model Apotek {
   nama_apotek String
   alamat      String
   Apoteker    Apoteker[]
-  Pelaporan   Pelaporan[]
   Kunjungan   Kunjungan[]
+  Pasien      Pasien[]
+  Pelaporan   Pelaporan[]
 }
 
 model Pelaporan {
@@ -82,17 +85,27 @@ model Pelaporan {
 }
 
 model Kunjungan {
-  id               String   @id @unique
-  id_pasien        String
-  id_apotek        String
-  id_apoteker      String
-  tgl_kunjungan    DateTime
-  tgl_resep        DateTime
-  nama_dokter      String
-  file_penyerahan  String
-  alamat_faskes    String
-  status_keaktifan String
-  Pasien           Pasien   @relation(fields: [id_pasien], references: [id])
-  Apotek           Apotek   @relation(fields: [id_apotek], references: [id])
-  Apoteker         Apoteker @relation(fields: [id_apoteker], references: [id])
+  id                      String                    @id @unique
+  id_pasien               String
+  id_apotek               String
+  id_apoteker             String
+  tgl_kunjungan           DateTime                  @db.Date
+  tgl_resep               DateTime                  @db.Date
+  nama_dokter             String
+  alamat_faskes           String
+  file_penyerahan         String
+  Apotek                  Apotek                    @relation(fields: [id_apotek], references: [id])
+  Apoteker                Apoteker                  @relation(fields: [id_apoteker], references: [id])
+  Pasien                  Pasien                    @relation(fields: [id_pasien], references: [id])
+  RiwayatChangesKunjungan RiwayatChangesKunjungan[]
+}
+
+model RiwayatChangesKunjungan {
+  id            String    @id @unique
+  id_kunjungan  String
+  id_user       String
+  tgl_perubahan DateTime
+  perubahan     String
+  Kunjungan     Kunjungan @relation(fields: [id_kunjungan], references: [id])
+  User          User      @relation(fields: [id_user], references: [id])
 }
