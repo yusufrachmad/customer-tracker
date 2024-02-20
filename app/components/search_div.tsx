@@ -15,6 +15,7 @@ export default function SearchDiv() {
               name="inlineradio"
               value="nik"
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              required
             />
             <label htmlFor="nik" className="ms-2 text-sm font-medium">
               NIK
@@ -22,10 +23,10 @@ export default function SearchDiv() {
           </div>
           <div className="flex items-center me-4">
             <input
-              id="nama"
+              id="nama_pasien"
               type="radio"
               name="inlineradio"
-              value="nama"
+              value="nama_pasien"
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
             <label htmlFor="nama" className="ms-2 text-sm font-medium">
@@ -37,7 +38,7 @@ export default function SearchDiv() {
               id="alamat"
               type="radio"
               name="inlineradio"
-              value="alamat"
+              value="alamat_ktp"
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
             <label htmlFor="alamat" className="ms-2 text-sm font-medium">
@@ -59,7 +60,6 @@ export default function SearchDiv() {
         </div>
       </div>
       <SearchBar />
-      <hr className="my-5" />
     </div>
   );
 }
