@@ -23,10 +23,21 @@ export function SidebarItem({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const handleClick = (text: string) => {
-    router.push(text === "Beranda" ? "/" : `/${text.toLowerCase()}`);
+  const handleClick = (path: string) => {
+    router.push(path);
   };
-  const active = pathname === `/${text.toLowerCase()}`;
+
+  const paths: { [key: string]: string } = {
+    Beranda: "/",
+    Pendaftaran: "/pendaftaran",
+    Riwayat: "/riwayat",
+    Akun: "/akun",
+    "Pelaporan Apotek": "/pelaporanapotek",
+    "Verifikasi Akun": "/verifikasiakun",
+  };
+
+  const active =
+    text === "Beranda" ? pathname === "/" : pathname.startsWith(paths[text]);
 
   return (
     <>
@@ -34,7 +45,7 @@ export function SidebarItem({
         className={`flex relative items-center py-2 px-5 my-3 font-medium rounded-md cursor-pointer transition-colors ${
           active ? "bg-[#f0de36]" : "hover:bg-yellow-100 text-gray-700"
         }`}
-        onClick={() => handleClick(text)}
+        onClick={() => handleClick(paths[text])}
       >
         {icon}
         <span className="w-52 ml-3">{text}</span>
