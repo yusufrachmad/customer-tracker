@@ -6,28 +6,16 @@ import useZodForm from "@/app/hooks/useZodForm";
 import Modal from "@/app/components/modal";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@/app/lib/actions/updateProfile";
-
-interface Profile {
-  id: string;
-  nama_apoteker: string;
-  stra: string;
-  sipa: string;
-  email: string;
-  Apotek: { id: string; alamat: string; nama_apotek: string };
-}
+import type { Profile } from "./page";
 
 const Form = ({ profile }: { profile: Profile[] }) => {
   const router = useRouter();
   const { formState } = useZodForm(registerSchema);
-  const [form, setForm] = useState<Profile[]>(profile);
+  const [form, setForm] = useState(profile);
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const handleChange = (
-    index: number,
-    key: keyof Profile | keyof Profile["Apotek"],
-    value: string
-  ) => {
+  const handleChange = (index: number, key: string, value: string) => {
     const formData = [...form];
     if (key in formData[index]) {
       formData[index][key as keyof Profile] = value;
@@ -38,9 +26,6 @@ const Form = ({ profile }: { profile: Profile[] }) => {
     setForm(formData);
   };
 
-  const handleModalOpen = () => {
-    setShowModal(true);
-  };
   const handleEdit = () => {
     setIsEdit(!isEdit);
   };
@@ -50,6 +35,10 @@ const Form = ({ profile }: { profile: Profile[] }) => {
     setIsEdit(false);
     setShowModal(false);
     router.refresh();
+  };
+
+  const handleModalOpen = () => {
+    setShowModal(true);
   };
 
   const handleModalClose = () => {
@@ -193,7 +182,6 @@ const Form = ({ profile }: { profile: Profile[] }) => {
           <div className="flex ml-auto mr-20 mt-20 justify-end">
             <button
               className="bg-yellow-400 text-black rounded-md p-3 px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300"
-              // type="submit"
               onClick={handleModalOpen}
             >
               Simpan

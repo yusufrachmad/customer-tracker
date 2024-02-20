@@ -2,24 +2,21 @@ import ClientLayout from "../components/client_layout";
 import { authServerSession } from "@/app/lib/auth";
 import prisma from "@/app/lib/db";
 import Form from "@/app/akun/form";
+import type { Apotek } from "@prisma/client";
 
 interface User {
   id: string;
   email: string;
 }
 
-interface Profile {
+export type Profile = {
   id: string;
   nama_apoteker: string;
   stra: string;
   sipa: string;
   email: string;
-  Apotek: {
-    id: string;
-    alamat: string;
-    nama_apotek: string;
-  };
-}
+  Apotek: Apotek;
+};
 
 async function getProfile(session: User | null) {
   const res = await prisma.apoteker.findFirst({
