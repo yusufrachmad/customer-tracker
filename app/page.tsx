@@ -5,15 +5,44 @@ import LoginButton from "./components/beranda/login_button";
 import { Text, Files, KeyRound, Building2 } from "lucide-react";
 import Circle from "./components/beranda/circle";
 import Kunjungan from "./components/beranda/kunjungan";
+import { getKunjunganPerTahun } from "@/app/pelaporanapotek/page";
+import prisma from "@/app/lib/db";
+import type { KunjunganPerTahun } from "@/app/pelaporanapotek/page";
 
-interface User {
+export type User = {
+  id: string;
   nama: string;
   role: string;
-}
+};
+
+const getKunjunganPerBulan = async ({ userId }: { userId: string }) => {
+  try {
+    const res =
+      await prisma.$queryRaw`SELECT public."Kunjungan".id_apotek, nama_apotek, to_char(tgl_kunjungan, 'MM') AS month, COUNT(*) AS count
+    FROM public."Kunjungan" JOIN public."Apotek" ON public."Kunjungan".id_apotek = public."Apotek".id JOIN public."Apoteker" ON public."Apotek".id = public."Apoteker".id_apotek
+    WHERE to_char(tgl_kunjungan, 'MM') = to_char(current_date, 'MM') AND to_char(tgl_kunjungan, 'YYYY') = to_char(current_date, 'YYYY') AND public."Apoteker".id_user = ${userId}
+    GROUP BY public."Kunjungan".id_apotek, nama_apotek, month;`;
+
+    return res;
+  } catch (error) {
+    console.error("Error fetching kunjungan per bulan:", error);
+    return null;
+  }
+};
 
 export default async function Home() {
   const logo = require("@/public/psychopharm.png").default;
   const session = (await authServerSession()) as User;
+  let kunjunganBulanIni =
+    session?.role === "dinkes"
+      ? await getKunjunganPerTahun()
+      : await getKunjunganPerBulan({
+          userId: session.id,
+        });
+  if (kunjunganBulanIni.length === 0) {
+    kunjunganBulanIni = [{ jumlah_kunjungan: 0 }];
+  }
+
   return (
     <>
       <Header />
@@ -55,7 +84,9 @@ export default async function Home() {
           />
         </div>
       </div>
-      <Kunjungan />
+      <Kunjungan
+        jumlahKunjungan={kunjunganBulanIni.reverse()[0].jumlah_kunjungan}
+      />
     </>
   );
 }
