@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import { addPatient } from "@/app/lib/actions/addPasien";
 import useZodForm from "@/app/hooks/useZodForm";
 import { patientRegisterSchema } from "@/app/lib/validation";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import type { Apotek } from "@prisma/client";
 
-export default function DaftarClient() {
+export default function DaftarClient({
+  apotek,
+  user,
+}: {
+  apotek: Apotek[];
+  user: string;
+}) {
   const { formState } = useZodForm(patientRegisterSchema);
-  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -16,32 +22,23 @@ export default function DaftarClient() {
 
     try {
       const formData = new FormData(event.currentTarget);
-      const { data, success } = await addPatient(formData);
+      const { data, success, message } = await addPatient(formData);
 
       if (!success) {
-        throw new Error("Gagal menambahkan data");
+        toast.error(message);
       } else {
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 2000);
+        toast.success(message);
 
         router.push(`/pendaftaran/${data}`);
       }
     } catch (error: any) {
       console.error(error?.message);
+      toast.error("Gagal mendaftar");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {success && (
-        <div className="flex ml-5 border bg-green-400 justify-center items-center p-4 rounded-lg shadow-lg animate-pulse">
-          <p className="text-white text-md font-semibold">
-            Data berhasil disimpan
-          </p>
-        </div>
-      )}
       <div className="grid grid-cols-2 gap-y-7 gap-5 mx-20 mt-10">
         <div className="col-span-1">
           <h1 className="text-l">Nama Lengkap</h1>
@@ -114,6 +111,21 @@ export default function DaftarClient() {
             }}
           />
         </div>
+        {user === "dinkes" ? (
+          <div className="col-span-1">
+            <h1 className="text-l">Apotek</h1>
+            <select
+              name="apotek_id"
+              className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
+            >
+              {apotek.map((apotek) => (
+                <option key={apotek.id} value={apotek.id}>
+                  {apotek.nama_apotek}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
       </div>
       {formState.errors.root?.message ? (
         <div className="flex mt-4 pl-6">
@@ -122,7 +134,7 @@ export default function DaftarClient() {
           </p>
         </div>
       ) : null}
-      <div className="flex ml-auto mr-20 mt-20 justify-end">
+      <div className="flex ml-auto mr-20 mt-12 justify-end">
         <button
           className="bg-yellow-400 text-black rounded-md p-3 px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300"
           type="submit"
