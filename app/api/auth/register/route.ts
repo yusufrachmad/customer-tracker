@@ -74,7 +74,7 @@ export async function POST(request: Request) {
           stra: stra,
           sipa: sipa,
           nama_apoteker: nama,
-          apotekId_apotek: apotekId,
+          id_apotek: apotekId,
         },
       });
     });
