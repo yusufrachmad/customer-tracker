@@ -4,13 +4,24 @@ import LoginRegister from "../components/login_register";
 import { loginSchema } from "../lib/validation";
 import useZodForm from "@/app/hooks/useZodForm";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ModalLogin from "../components/modal_login";
 
 export default function Login() {
   const { formState, register, setError } = useZodForm(loginSchema);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const router = useRouter();
+  useEffect(() => {
+    if (formState.errors.root?.message === "not-verified") {
+      setShowModal(true);
+    }
+  }, [formState.errors.root?.message]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,6 +40,7 @@ export default function Login() {
 
       if (res?.error) {
         setIsSubmitting(false);
+        setShowModal(true);
         setError("root", {
           message: res.error,
         });
@@ -71,13 +83,19 @@ export default function Login() {
                 />
               </div>
             </div>
-            {formState.errors.root?.message ? (
+            {formState.errors.root?.message !== "not-verified" ? (
               <div className="flex mt-4 pl-6">
                 <p className="text-red-500 text-sm font-semibold ">
                   {formState.errors?.root?.message}
                 </p>
               </div>
             ) : null}
+            {showModal && formState.errors.root?.message === "not-verified" && (
+              <ModalLogin
+                onClose={handleCloseModal}
+                onConfirm={handleCloseModal}
+              />
+            )}
             <div className="flex justify-end pr-5 mt-3">
               <button className="float-right text-sm text-gray-500 hover:text-gray-700">
                 Lupa kata sandi?
