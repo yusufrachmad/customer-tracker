@@ -11,14 +11,24 @@ export default function Circle({
   colors: string[];
 }) {
   const router = useRouter();
-  const handleClick = (text: string) => {
-    router.push(`/${text.toLowerCase()}`);
+  const handleClick = (path: string) => {
+    router.push(path);
   };
+
+  const paths: { [key: string]: string } = {
+    Beranda: "/",
+    Pendaftaran: "/pendaftaran",
+    Riwayat: "/riwayat",
+    Akun: "/akun",
+    "Pelaporan Apotek": "/pelaporanapotek",
+    "Verifikasi Akun": "/verifikasiakun",
+  };
+
   return (
     <div className="col-span-1">
       <div
         className={`flex border rounded-full justify-center ${colors[0]} shadow-2xl hover:cursor-pointer ${colors[1]}`}
-        onClick={() => handleClick(title)}
+        onClick={() => handleClick(paths[title])}
       >
         <div
           className={`flex justify-center items-center w-24 h-24 ${colors[2]} rounded-xl m-11`}
