@@ -45,7 +45,7 @@ export default function PendaftaranIndex() {
 
   const handleDate = (date: string) => {
     const newDate = new Date(date);
-    const formattedDate = newDate.toLocaleDateString("en-US", {
+    const formattedDate = newDate.toLocaleDateString("id-ID", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -104,7 +104,7 @@ export default function PendaftaranIndex() {
                     <td className="border-b border-[#eef0ff] py-3 hover:cursor-pointer">
                       <div className="flex justify-center px-5">
                         <div
-                          className="flex w-5 justify-center bg-[#ffcc00]"
+                          className="flex w-5 justify-center bg-[#ffcc00] hover:bg-yellow-300"
                           onClick={() => handleClick(pasien.id)}
                         >
                           <PlusCircle size={20} color="#0d1282" />
