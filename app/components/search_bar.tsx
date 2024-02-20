@@ -19,6 +19,7 @@ export default function SearchBar() {
           Cari
         </button>
       </div>
+      <hr className="my-5" />
     </>
   );
 }
