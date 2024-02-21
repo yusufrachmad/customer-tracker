@@ -85,7 +85,7 @@ export default function PendaftaranIndex() {
             <tbody className="text-center">
               {searchResult.map((pasien: Pasien) => {
                 return (
-                  <tr>
+                  <tr key={pasien.id}>
                     <td className="border-b border-[#eef0ff] py-3">
                       {pasien.nama_pasien}
                     </td>
