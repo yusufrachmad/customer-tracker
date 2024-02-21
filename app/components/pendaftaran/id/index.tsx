@@ -1,24 +1,56 @@
 "use client";
 import type { Pasien } from "@prisma/client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import FileUpload from "@/app/components/file_upload";
+import { addKunjungan } from "@/app/lib/actions/addKunjungan";
+import toast from "react-hot-toast";
 
 export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
   const [toggle, setToggle] = useState(true);
   const [status, setStatus] = useState("aktif");
   const toggleClass = " transform translate-x-7";
+  const [blob, setBlob] = useState("");
+
+  const handleData = (data: string) => {
+    setBlob(data);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const data = new FormData(e.currentTarget);
+      data.append("id_pasien", pasien.id);
+      data.append("foto_penyerahan", blob);
+      data.append("status", status);
+
+      const { success, message } = await addKunjungan(data);
+
+      if (!success) {
+        toast.error(message);
+      } else {
+        toast.success(message);
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+      toast.error("Gagal mendaftar");
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col border-b px-20 h-20 justify-center bg-white">
         <h1 className="text-xl font-bold">{pasien.nama_pasien}</h1>
         <h2 className="text-sm">{pasien.nik}</h2>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-y-7 gap-5 mx-20 mt-10">
           <div className="col-span-1">
             <h1 className="text-l">Tanggal Kunjungan</h1>
             <input
               type="date"
               className="w-64 h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
+              name="tgl_kunjungan"
             />
           </div>
           <div className="col-span-1">
@@ -26,6 +58,7 @@ export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
             <input
               type="date"
               className="w-64 h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
+              name="tgl_resep"
             />
           </div>
           <div className="col-span-1 pr-12">
@@ -34,19 +67,11 @@ export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
               type="text"
               placeholder="Nama Faskes, Alamat Lengkap"
               className="w-full h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
+              name="alamat_faskes"
             />
           </div>
           <div className="col-span-1 row-span-2">
-            <div>
-              <h1 className="text-l">Unggah Foto Penyerahan</h1>
-              <input
-                type="file"
-                className="w-64 border-2 border-gray-300 rounded-md p-2"
-              />
-              <button className="bg-purple-400 text-white rounded-md p-3 mt-3 ml-2 border-1 border-gray-300 shadow-xl hover:bg-purple-500">
-                Unggah
-              </button>
-            </div>
+            <FileUpload onData={handleData} />
           </div>
           <div className="col-span-1 pr-12">
             <h1 className="text-l">Nama Dokter</h1>
@@ -54,6 +79,7 @@ export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
               type="text"
               placeholder="Nama Lengkap dan Gelar"
               className="w-full h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
+              name="nama_dokter"
             />
           </div>
           <div className="col-span-1 pt-4">
@@ -79,7 +105,10 @@ export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
           </div>
         </div>
         <div className="flex ml-auto mr-20 mt-32 justify-end">
-          <button className="bg-yellow-400 text-black rounded-md p-3 px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300">
+          <button
+            className="bg-[#eddd4b] text-black rounded-md p-3 px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300"
+            type="submit"
+          >
             Simpan
           </button>
         </div>

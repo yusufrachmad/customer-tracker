@@ -1,16 +1,86 @@
 "use client";
 import type { Kunjungan } from "@/app/riwayat/[id]/page";
 import { useState } from "react";
+import { updateKunjungan } from "@/app/lib/actions/updateKunjungan";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import Modal from "@/app/components/modal";
+import type { Riwayat } from "@/app/riwayat/[id]/[kunjungan]/page";
 
 export default function DetailKunjungan({
   kunjungan,
+  riwayat,
 }: {
   kunjungan: Kunjungan;
+  riwayat: Riwayat[];
 }) {
+  const router = useRouter();
   const active = kunjungan.Pasien.status === "aktif";
   const [toggle, setToggle] = useState(active);
   const [status, setStatus] = useState("aktif");
+  const [isEditting, setIsEditting] = useState(false);
   const toggleClass = " transform translate-x-7";
+  const [showModal, setShowModal] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditting(!isEditting);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const data = new FormData(event.currentTarget);
+      const { success, message } = await updateKunjungan(data);
+      data.append("status", status);
+      data.append("id_kunjungan", kunjungan.id);
+      data.append("id_pasien", kunjungan.Pasien.id);
+
+      if (!success) {
+        toast.error(message);
+      } else {
+        toast.success(message);
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+      toast.error("Gagal mengubah data");
+    }
+    setIsEditting(false);
+    setShowModal(false);
+    router.refresh();
+  };
+
+  const handleModalOpen = () => {
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  const handleDate = (date: string) => {
+    const newDate = new Date(date);
+    const formattedDate = newDate.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+
+    return formattedDate.replace(/-/g, "/");
+  };
+
+  const handleTimestamp = (date: string) => {
+    const newDate = new Date(date);
+    const formattedDate = newDate.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return formattedDate.replace(/-/g, "/");
+  };
 
   return (
     <>
@@ -18,7 +88,12 @@ export default function DetailKunjungan({
         <h1 className="text-xl font-bold">{kunjungan.Pasien.nama_pasien}</h1>
         <h2 className="text-sm">{kunjungan.Pasien.nik}</h2>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input type="hidden" name="status" value={status} />
+          <input type="hidden" name="id_pasien" value={kunjungan.Pasien.id} />
+          <input type="hidden" name="id_kunjungan" value={kunjungan.id} />
+        </div>
         <div className="grid grid-cols-2 gap-y-7 gap-5 mx-20 mt-10">
           <div className="col-span-1">
             <h1 className="text-l">Tanggal Kunjungan</h1>
@@ -28,7 +103,20 @@ export default function DetailKunjungan({
               defaultValue={
                 new Date(kunjungan.tgl_kunjungan).toISOString().split("T")[0]
               }
+              disabled={!isEditting}
+              name="tgl_kunjungan"
+              required
             />
+            {String(kunjungan.tgl_kunjungan) !==
+              String(riwayat[0].tgl_kunjungan) && (
+              <p className="text-sm">
+                <i>
+                  <s>{handleDate(String(riwayat[0].tgl_kunjungan))}</s> diedit
+                  oleh {riwayat[0].User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                </i>
+              </p>
+            )}
           </div>
           <div className="col-span-1">
             <h1 className="text-l">Tanggal Resep</h1>
@@ -38,7 +126,19 @@ export default function DetailKunjungan({
               defaultValue={
                 new Date(kunjungan.tgl_resep).toISOString().split("T")[0]
               }
+              disabled={!isEditting}
+              name="tgl_resep"
+              required
             />
+            {String(kunjungan.tgl_resep) !== String(riwayat[0].tgl_resep) && (
+              <p className="text-sm">
+                <i>
+                  <s>{handleDate(String(riwayat[0].tgl_resep))}</s> diedit oleh{" "}
+                  {riwayat[0].User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                </i>
+              </p>
+            )}
           </div>
           <div className="col-span-1 pr-12">
             <h1 className="text-l">Alamat Faskes</h1>
@@ -47,18 +147,40 @@ export default function DetailKunjungan({
               placeholder="Nama Faskes, Alamat Lengkap"
               className="w-full h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
               defaultValue={kunjungan.alamat_faskes}
+              disabled={!isEditting}
+              name="alamat_faskes"
+              required
             />
+            {kunjungan.alamat_faskes !== riwayat[0].alamat_faskes && (
+              <p className="text-sm">
+                <i>
+                  <s>{riwayat[0].alamat_faskes}</s> diedit oleh{" "}
+                  {riwayat[0].User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                </i>
+              </p>
+            )}
           </div>
           <div className="col-span-1 row-span-2">
             <div>
               <h1 className="text-l">Unggah Foto Penyerahan</h1>
               <input
-                type="file"
-                className="w-64 border-2 border-gray-300 rounded-md p-2"
+                type="text"
+                className="w-64  h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
+                defaultValue={kunjungan.file_penyerahan}
+                disabled={!isEditting}
+                name="file_penyerahan"
+                required
               />
-              <button className="bg-purple-400 text-white rounded-md p-3 mt-3 ml-2 border-1 border-gray-300 shadow-xl hover:bg-purple-500">
-                Unggah
-              </button>
+              {kunjungan.file_penyerahan !== riwayat[0].file_penyerahan && (
+                <p className="text-sm">
+                  <i>
+                    <s>{riwayat[0].file_penyerahan}</s> diedit oleh{" "}
+                    {riwayat[0].User.nama} pada{" "}
+                    {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  </i>
+                </p>
+              )}
             </div>
           </div>
           <div className="col-span-1 pr-12">
@@ -68,7 +190,19 @@ export default function DetailKunjungan({
               placeholder="Nama Lengkap dan Gelar"
               className="w-full h-12 border-2 border-gray-300 rounded-md p-2 mt-3"
               defaultValue={kunjungan.nama_dokter}
+              disabled={!isEditting}
+              name="nama_dokter"
+              required
             />
+            {kunjungan.nama_dokter !== riwayat[0].nama_dokter && (
+              <p className="text-sm">
+                <i>
+                  <s>{riwayat[0].nama_dokter}</s> diedit oleh{" "}
+                  {riwayat[0].User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                </i>
+              </p>
+            )}
           </div>
           <div className="col-span-1 pt-4">
             <h1 className="text-l">Status Keaktifan</h1>
@@ -77,8 +211,10 @@ export default function DetailKunjungan({
               <div
                 className="md:w-16 md:h-8 w-14 h-8 flex items-center bg-[#d9d9d9] rounded-full p-1 cursor-pointer outline mx-4"
                 onClick={() => {
-                  setToggle(!toggle);
-                  setStatus(toggle ? "nonaktif" : "aktif");
+                  if (isEditting) {
+                    setToggle(!toggle);
+                    setStatus(toggle ? "nonaktif" : "aktif");
+                  }
                 }}
               >
                 <div
@@ -90,13 +226,39 @@ export default function DetailKunjungan({
               </div>
               <p className="text-md">Nonaktif</p>
             </div>
+            {kunjungan.Pasien.status !== riwayat[0].status && (
+              <p className="text-sm">
+                <i>
+                  <s>{riwayat[0].status}</s> diedit oleh {riwayat[0].User.nama}{" "}
+                  pada {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                </i>
+              </p>
+            )}
           </div>
         </div>
         <div className="flex ml-auto mr-20 mt-32 justify-end">
-          <button className="bg-yellow-400 text-black rounded-md p-3 px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300">
-            Simpan
-          </button>
+          {isEditting ? (
+            <div
+              className="bg-[#eddd4b] text-black rounded-md px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300 flex flex-col items-center"
+              onClick={handleModalOpen}
+            >
+              <span>Simpan</span>
+              <span>Perubahan</span>
+            </div>
+          ) : (
+            <div
+              className="bg-red-600 text-white rounded-md p-3 px-16 border-1 border-gray-300 shadow-xl hover:bg-red-500 hover:cursor-pointer"
+              onClick={handleEdit}
+            >
+              Edit
+            </div>
+          )}
         </div>
+        {showModal && (
+          <Modal onClose={handleModalClose} onConfirm={handleModalClose}>
+            Apakah Anda yakin ingin menyimpan perubahan?
+          </Modal>
+        )}
       </form>
     </>
   );
