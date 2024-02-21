@@ -2,10 +2,8 @@
 import { ChevronRight } from "lucide-react";
 import SearchDiv from "@/app/components/search_div";
 import { useState } from "react";
-import type { Pasien } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { Kunjungan } from "@/app/riwayat/[id]/page";
-import Pagination from "../pagination";
+import type { Kunjungan } from "@/app/riwayat/[id]/page";
 
 export default function RiwayatIndex() {
   const router = useRouter();
@@ -89,7 +87,7 @@ export default function RiwayatIndex() {
             <tbody className="text-center">
               {searchResult.map((pasien: Kunjungan) => {
                 return (
-                  <tr>
+                  <tr key={pasien.Pasien.id}>
                     <td className="border-b border-[#eef0ff] py-3">
                       {pasien.Pasien.nama_pasien}
                     </td>

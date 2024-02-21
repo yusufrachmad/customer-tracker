@@ -1,6 +1,5 @@
 "use server";
 import prisma from "@/app/lib/db";
-import toast from "react-hot-toast";
 
 export const verifikasiAkun = async (id: string) => {
   try {
