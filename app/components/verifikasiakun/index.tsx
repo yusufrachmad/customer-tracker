@@ -5,7 +5,7 @@ import type { Apoteker } from "@/app/verifikasiakun/page";
 import VerifAkun from "./verifakun";
 import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "../pagination";
-import { sliceData } from "../riwayat/id";
+import { sliceData } from "@/app/lib/functions";
 import PageHeader from "../page_header";
 
 export default function VerifikasiAkunIndex({

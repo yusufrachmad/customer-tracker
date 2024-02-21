@@ -6,12 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { Kunjungan } from "@/app/riwayat/[id]/page";
 import { useEffect, useState } from "react";
 import Pagination from "../../pagination";
-
-export const sliceData = (data: any, start: number, end: number) => {
-  const slicedData = data.slice(start, end);
-
-  return slicedData;
-};
+import { sliceData } from "@/app/lib/functions";
+import Link from "next/link";
 
 export default function RiwayatKunjungan({
   kunjungan,
@@ -79,6 +75,25 @@ export default function RiwayatKunjungan({
     }
   };
 
+  const handleDownload = (url: string) => {
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `${handleDate(String(kunjungan[0].tgl_kunjungan))}-${
+            kunjungan[0].Pasien.nama_pasien
+          }.png`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+      });
+  };
+
   return (
     <>
       <PageHeader title={kunjungan[0].Pasien.nama_pasien} />
@@ -138,8 +153,23 @@ export default function RiwayatKunjungan({
                   </td>
                   <td className="bg-white border-b-4 border-[#f6f6f6] pt-3 pb-40">
                     <div className="flex justify-center py-3">
-                      <Search color="#0d1282" size={18} className="mr-2" />
-                      <Download color="#d71313" size={18} className="ml-2" />
+                      <Link
+                        href={kunj.file_penyerahan}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Search
+                          color="#0d1282"
+                          size={18}
+                          className="mr-2 hover:cursor-pointer"
+                        />
+                      </Link>
+                      <Download
+                        color="#d71313"
+                        size={18}
+                        className="ml-2 hover:cursor-pointer"
+                        onClick={() => handleDownload(kunj.file_penyerahan)}
+                      />
                     </div>
                   </td>
                   <td className="bg-white border-b-4 border-[#f6f6f6] pt-3 pb-40">

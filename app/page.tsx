@@ -5,9 +5,8 @@ import LoginButton from "./components/beranda/login_button";
 import { Text, Files, KeyRound, Building2 } from "lucide-react";
 import Circle from "./components/beranda/circle";
 import Kunjungan from "./components/beranda/kunjungan";
-import { getKunjunganPerTahun } from "@/app/pelaporanapotek/page";
+import { getKunjunganPerTahun } from "@/app/lib/functions";
 import prisma from "@/app/lib/db";
-import type { KunjunganPerTahun } from "@/app/pelaporanapotek/page";
 
 export type User = {
   id: string;

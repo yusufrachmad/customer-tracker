@@ -2,7 +2,8 @@ import ClientLayout from "../components/client_layout";
 import PelaporanApotekIndex from "../components/pelaporanapotek";
 import prisma from "@/app/lib/db";
 import type { PasienNonAktif } from "./pasien/page";
-import { getPasienNonAktif } from "./pasien/page";
+import { getPasienNonAktif } from "../lib/functions";
+import { getKunjunganPerTahun } from "../lib/functions";
 
 export type KunjunganPerBulan = {
   id_apotek: string;
@@ -31,67 +32,15 @@ const getKunjunganPerBulan = async () => {
   }
 };
 
-export const getKunjunganPerTahun = async () => {
-  const monthNumberToName = (monthNumber: any) => {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mei",
-      "Juni",
-      "Juli",
-      "Agt",
-      "Sep",
-      "Okt",
-      "Nov",
-      "Des",
-    ];
-    return months[parseInt(monthNumber) - 1] || "";
-  };
-
-  const convertMonthNames = (data: any) => {
-    return data.map((entry: typeof data) => {
-      const [month] = entry.year_month.split("-");
-      return {
-        month: monthNumberToName(month),
-        jumlah_kunjungan: entry.total_count.toNumber(),
-      };
-    });
-  };
-
-  try {
-    const res = await prisma.$queryRaw`WITH MonthlyCounts AS (
-        SELECT 
-            id_apotek, 
-            nama_apotek, 
-            to_char(tgl_kunjungan, 'MM-YYYY') AS year_month, 
-            COUNT(*) AS count
-        FROM public."Kunjungan" 
-        JOIN public."Apotek" ON public."Kunjungan".id_apotek = public."Apotek".id
-        WHERE to_char(tgl_kunjungan, 'YYYY') = to_char(current_date, 'YYYY')
-        GROUP BY id_apotek, nama_apotek, year_month
-    )
-    SELECT DISTINCT
-        year_month,
-        SUM(count) OVER (PARTITION BY year_month) AS total_count
-    FROM MonthlyCounts;`;
-
-    const convertedData = convertMonthNames(res);
-
-    return convertedData;
-  } catch (error) {
-    console.error("Error fetching kunjungan per tahun:", error);
-    return null;
-  }
-};
-
 export default async function PelaporanApotek() {
   const kunjunganPerBulan =
     (await getKunjunganPerBulan()) as KunjunganPerBulan[];
   const kunjunganPerTahun =
     (await getKunjunganPerTahun()) as KunjunganPerTahun[];
   const pasienNonAktif = (await getPasienNonAktif()) as PasienNonAktif[];
+  if (kunjunganPerTahun.length === 0) {
+    kunjunganPerTahun.push({ month: "", jumlah_kunjungan: 0 });
+  }
 
   return (
     <>
