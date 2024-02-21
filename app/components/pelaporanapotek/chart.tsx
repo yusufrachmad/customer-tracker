@@ -8,11 +8,11 @@ export default function Chart({ perTahun }: { perTahun: KunjunganPerTahun[] }) {
   const draw = useMemo(
     () => () => {
       const data = new google.visualization.DataTable();
-      const options = {
+      const options: google.visualization.LineChartOptions = {
         curveType: "function",
         legend: { position: "bottom" },
-        width: lineChart?.current?.offsetWidth || "100%",
-        height: lineChart?.current?.offsetHeight || 200,
+        width: 300,
+        height: 200,
       };
 
       data.addColumn("string", "Bulan");
@@ -35,16 +35,6 @@ export default function Chart({ perTahun }: { perTahun: KunjunganPerTahun[] }) {
       );
 
       chart.draw(oData, options);
-
-      const handleResize = () => {
-        options.width = lineChart?.current?.offsetWidth || "100%";
-        options.height = lineChart?.current?.offsetHeight || 200;
-        chart.draw(oData, options);
-      };
-
-      window.addEventListener("resize", handleResize);
-
-      return () => window.removeEventListener("resize", handleResize);
     },
     [perTahun]
   );

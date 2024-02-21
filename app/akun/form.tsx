@@ -11,20 +11,8 @@ import type { Profile } from "./page";
 const Form = ({ profile }: { profile: Profile[] }) => {
   const router = useRouter();
   const { formState } = useZodForm(registerSchema);
-  const [form, setForm] = useState(profile);
   const [isEdit, setIsEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  const handleChange = (index: number, key: string, value: string) => {
-    const formData = [...form];
-    if (key in formData[index]) {
-      formData[index][key as keyof Profile] = value;
-    }
-    if (key in formData[index].Apotek) {
-      formData[index].Apotek[key as keyof Profile["Apotek"]] = value;
-    }
-    setForm(formData);
-  };
 
   const handleEdit = () => {
     setIsEdit(!isEdit);
@@ -60,10 +48,10 @@ const Form = ({ profile }: { profile: Profile[] }) => {
       </div>
       <form action={updateProfile}>
         <div>
-          <input type="hidden" name="id_apotek" value={form[0].Apotek.id} />
-          <input type="hidden" name="id_apoteker" value={form[0].id} />
+          <input type="hidden" name="id_apotek" value={profile[0].Apotek.id} />
+          <input type="hidden" name="id_apoteker" value={profile[0].id} />
         </div>
-        {form.map((data, index) => (
+        {profile.map((data, index) => (
           <div
             className="grid grid-cols-2 gap-y-7 gap-5 mx-20 mt-10"
             key={index}
@@ -74,11 +62,8 @@ const Form = ({ profile }: { profile: Profile[] }) => {
                 type="text"
                 className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
                 placeholder="Nama Lengkap"
-                value={data.nama_apoteker}
+                defaultValue={data.nama_apoteker}
                 name="nama_apoteker"
-                onChange={(e) => {
-                  handleChange(index, "nama_apoteker", e.target.value);
-                }}
                 disabled={!isEdit}
                 onError={() => {
                   formState.errors.nama;
@@ -90,12 +75,9 @@ const Form = ({ profile }: { profile: Profile[] }) => {
               <textarea
                 className="w-full h-[15rem] border-2 border-gray-300 rounded-md p-2"
                 placeholder="Alamat Apotek"
-                value={data.Apotek.alamat}
+                defaultValue={data.Apotek.alamat}
                 disabled={!isEdit}
                 name="alamat"
-                onChange={(e) => {
-                  handleChange(index, "alamat", e.target.value);
-                }}
                 onError={() => {
                   formState.errors.alamat;
                 }}
@@ -107,12 +89,9 @@ const Form = ({ profile }: { profile: Profile[] }) => {
                 type="text"
                 className="w-96  h-12 border-2 border-gray-300 rounded-md p-2"
                 placeholder="No. STRA"
-                value={data.stra}
+                defaultValue={data.stra}
                 disabled={!isEdit}
                 name="stra"
-                onChange={(e) => {
-                  handleChange(index, "stra", e.target.value);
-                }}
                 onError={() => {
                   formState.errors.stra;
                 }}
@@ -124,12 +103,9 @@ const Form = ({ profile }: { profile: Profile[] }) => {
                 type="text"
                 placeholder="No. SIPA"
                 className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
-                value={data.sipa}
+                defaultValue={data.sipa}
                 disabled={!isEdit}
                 name="sipa"
-                onChange={(e) => {
-                  handleChange(index, "sipa", e.target.value);
-                }}
                 onError={() => {
                   formState.errors.sipa;
                 }}
@@ -141,12 +117,9 @@ const Form = ({ profile }: { profile: Profile[] }) => {
                 type="text"
                 placeholder="Email"
                 className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
-                value={data.email}
+                defaultValue={data.email}
                 disabled={!isEdit}
                 name="email"
-                onChange={(e) => {
-                  handleChange(index, "email", e.target.value);
-                }}
                 onError={() => {
                   formState.errors.email;
                 }}
@@ -158,12 +131,9 @@ const Form = ({ profile }: { profile: Profile[] }) => {
                 type="text"
                 placeholder="Nama Apotek"
                 className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
-                value={data.Apotek.nama_apotek}
+                defaultValue={data.Apotek.nama_apotek}
                 disabled={!isEdit}
                 name="nama_apotek"
-                onChange={(e) => {
-                  handleChange(index, "nama_apotek", e.target.value);
-                }}
                 onError={() => {
                   formState.errors.nama_apotek;
                 }}

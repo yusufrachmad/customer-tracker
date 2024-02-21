@@ -20,7 +20,7 @@ export default function Circle({
     Pendaftaran: "/pendaftaran",
     Riwayat: "/riwayat",
     Akun: "/akun",
-    "Pelaporan Apotek": "/pelaporanapotek",
+    Pelaporan: "/pelaporanapotek",
     "Verifikasi Akun": "/verifikasiakun",
   };
 

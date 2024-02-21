@@ -91,17 +91,27 @@ export default function PelaporanApotekIndex({
           <Link href="/pelaporanapotek/pasien">
             <div className="flex flex-col bg-[#ffe7e7] text-left h-full p-1 hover:cursor-pointer">
               <p>Pasien Dinonaktifkan</p>
-              <p className="text-[#cf3e0e] mt-8">
-                {pasienNonAktif[0].Apotek?.nama_apotek}
-              </p>
-              <p className="text-[#cf3e0e] ">NIK: {pasienNonAktif[0].nik}</p>
-              <p className="text-[#cf3e0e] ">
-                Nama: {pasienNonAktif[0].nama_pasien}
-              </p>
-              <p className="text-[#cf3e0e] ">
-                Tanggal Nonaktif:{" "}
-                {handleDate(String(pasienNonAktif[0].tgl_nonaktif))}
-              </p>
+              {pasienNonAktif.length === 0 ? (
+                <p className="mt-8 text-[#cf3e0e]">
+                  Tidak ada pasien yang dinonaktifkan
+                </p>
+              ) : (
+                <>
+                  <p className="text-[#cf3e0e] mt-8">
+                    {pasienNonAktif[0].Apotek?.nama_apotek}
+                  </p>
+                  <p className="text-[#cf3e0e] ">
+                    NIK: {pasienNonAktif[0].nik}
+                  </p>
+                  <p className="text-[#cf3e0e] ">
+                    Nama: {pasienNonAktif[0].nama_pasien}
+                  </p>
+                  <p className="text-[#cf3e0e] ">
+                    Tanggal Nonaktif:{" "}
+                    {handleDate(String(pasienNonAktif[0].tgl_nonaktif))}
+                  </p>
+                </>
+              )}
             </div>
           </Link>
         </div>
