@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_DIRECT")
 }
 
 model User {
@@ -101,11 +102,16 @@ model Kunjungan {
 }
 
 model RiwayatChangesKunjungan {
-  id            String    @id @unique
-  id_kunjungan  String
-  id_user       String
-  tgl_perubahan DateTime
-  perubahan     String
-  Kunjungan     Kunjungan @relation(fields: [id_kunjungan], references: [id])
-  User          User      @relation(fields: [id_user], references: [id])
+  id              String    @id @unique
+  id_kunjungan    String
+  id_user         String
+  tgl_perubahan   DateTime
+  tgl_kunjungan   DateTime  @db.Date
+  tgl_resep       DateTime  @db.Date
+  nama_dokter     String
+  alamat_faskes   String
+  file_penyerahan String
+  status          String
+  Kunjungan       Kunjungan @relation(fields: [id_kunjungan], references: [id])
+  User            User      @relation(fields: [id_user], references: [id])
 }
