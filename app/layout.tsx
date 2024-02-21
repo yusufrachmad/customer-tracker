@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import Script from "next/script";
 
 import "./globals.css";
 
@@ -21,7 +22,8 @@ export default function RootLayout({
         <script
           type="text/javascript"
           src="https://www.gstatic.com/charts/loader.js"
-        ></script>
+          async
+        />
       </head>
       <body className={poppins.className}>{children}</body>
     </html>
