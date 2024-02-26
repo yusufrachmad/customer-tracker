@@ -2,7 +2,7 @@
 import { verifikasiAkun } from "@/app/lib/actions/verifikasiAkun";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import Modal from "../modal";
 
