@@ -17,7 +17,7 @@ export type User = {
 const getKunjunganPerBulan = async ({ userId }: { userId: string }) => {
   try {
     const res =
-      await prisma.$queryRaw`SELECT public."Kunjungan".id_apotek, nama_apotek, to_char(tgl_kunjungan, 'MM') AS month, COUNT(*) AS count
+      await prisma.$queryRaw`SELECT public."Kunjungan".id_apotek, nama_apotek, to_char(tgl_kunjungan, 'MM') AS month, COUNT(*) AS jumlah_kunjungan
     FROM public."Kunjungan" JOIN public."Apotek" ON public."Kunjungan".id_apotek = public."Apotek".id JOIN public."Apoteker" ON public."Apotek".id = public."Apoteker".id_apotek
     WHERE to_char(tgl_kunjungan, 'MM') = to_char(current_date, 'MM') AND to_char(tgl_kunjungan, 'YYYY') = to_char(current_date, 'YYYY') AND public."Apoteker".id_user = ${userId}
     GROUP BY public."Kunjungan".id_apotek, nama_apotek, month;`;
@@ -36,17 +36,20 @@ export default async function Home() {
     session?.role === "dinkes"
       ? await getKunjunganPerTahun()
       : await getKunjunganPerBulan({
-          userId: session.id,
+          userId: session?.id,
         });
   if (kunjunganBulanIni.length === 0) {
     kunjunganBulanIni = [{ jumlah_kunjungan: 0 }];
   }
+  const jumlah_kunjungan = Number(
+    kunjunganBulanIni.reverse()[0].jumlah_kunjungan
+  );
 
   return (
     <>
       <Header />
       <div className="flex justify-end items-center pt-10 mr-32">
-        <p className="text-md font-bold">Selamat Datang, {session.nama}!</p>
+        <p className="text-md font-bold">Selamat Datang, {session?.nama}!</p>
         <LoginButton />
       </div>
       <div className="flex flex-col justify-center items-center mt-10">
@@ -68,7 +71,11 @@ export default async function Home() {
             icon={<Files size={80} strokeWidth={1.5} color="white" />}
             colors={["bg-[#0d1282]", "hover:bg-blue-800"]}
           />
-
+          <Circle
+            title={session?.role === "apoteker" ? "Akun" : "Verifikasi Akun"}
+            icon={<KeyRound size={80} strokeWidth={1.5} />}
+            colors={["bg-[#d9d9d9]", "hover:bg-gray-200"]}
+          />
           {session?.role === "dinkes" && (
             <Circle
               title="Pelaporan"
@@ -76,16 +83,9 @@ export default async function Home() {
               colors={["bg-[#d71313]", "hover:bg-red-700"]}
             />
           )}
-          <Circle
-            title={session?.role === "apoteker" ? "Akun" : "Verifikasi Akun"}
-            icon={<KeyRound size={80} strokeWidth={1.5} />}
-            colors={["bg-[#d9d9d9]", "hover:bg-gray-200"]}
-          />
         </div>
       </div>
-      <Kunjungan
-        jumlahKunjungan={kunjunganBulanIni.reverse()[0].jumlah_kunjungan}
-      />
+      <Kunjungan jumlahKunjungan={jumlah_kunjungan} />
     </>
   );
 }
