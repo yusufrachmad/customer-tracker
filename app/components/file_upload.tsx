@@ -38,7 +38,6 @@ export default function FileUpload({
         type="file"
         className="w-64 border-2 border-gray-300 rounded-md p-2"
         ref={inputFileRef}
-        required
       />
       {showButton && (
         <button
