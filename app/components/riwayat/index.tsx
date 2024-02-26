@@ -9,6 +9,7 @@ export default function RiwayatIndex() {
   const router = useRouter();
   const [searchResult, setSearchResult] = useState([]) as any[];
   const [searchClicked, setSearchClicked] = useState(false);
+  let kunjunganTerakhir = "";
 
   const handleClick = (id: string) => {
     router.push(`/riwayat/${id}`);
@@ -54,7 +55,7 @@ export default function RiwayatIndex() {
     return formattedDate.replace(/-/g, "/");
   };
 
-  const kunjunganTerakhir = handleDate(searchResult[0]?.tgl_kunjungan);
+  kunjunganTerakhir = handleDate(searchResult[0]?.tgl_kunjungan);
 
   return (
     <>
