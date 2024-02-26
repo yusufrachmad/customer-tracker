@@ -39,7 +39,7 @@ export const addKunjungan = async (formData: FormData) => {
   const tgl_resep = formData.get("tgl_resep");
   const alamat_faskes = formData.get("alamat_faskes");
   const nama_dokter = formData.get("nama_dokter");
-  const foto_penyerahan = formData.get("foto_penyerahan");
+  const foto_penyerahan = formData.get("file_penyerahan");
   const status = formData.get("status");
 
   try {
@@ -75,7 +75,7 @@ export const addKunjungan = async (formData: FormData) => {
   } catch (error: any) {
     return {
       success: false,
-      message: error.message,
+      message: "Gagal mendaftar",
     };
   }
 };

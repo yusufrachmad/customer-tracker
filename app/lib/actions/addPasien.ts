@@ -83,7 +83,7 @@ export const addPatient = async (formData: FormData) => {
     } catch (error: any) {
       return {
         success: false,
-        message: error.message,
+        message: "Gagal mendaftar",
       };
     }
   }
