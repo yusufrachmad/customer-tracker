@@ -1,7 +1,6 @@
 import ClientLayout from "@/app/components/client_layout";
 import DetailKunjungan from "@/app/components/riwayat/id/id-kunjungan";
 import type { Kunjungan } from "@/app/riwayat/[id]/page";
-import type { User } from "@prisma/client";
 import prisma from "@/app/lib/db";
 
 export type Riwayat = {
@@ -15,8 +14,10 @@ export type Riwayat = {
   nama_dokter: string;
   file_penyerahan: string;
   status: string;
-  User: User;
-};
+  User: {
+    nama: string;
+  };
+} | null;
 
 const getKunjungan = async (id: string) => {
   const res = await prisma?.kunjungan.findFirst({
@@ -33,8 +34,8 @@ const getKunjungan = async (id: string) => {
   return res!;
 };
 
-const getRiwayat = async (id: string) => {
-  const res = await prisma.riwayatChangesKunjungan.findMany({
+const getRiwayat = async (id: string): Promise<Riwayat> => {
+  const res = await prisma?.riwayatChangesKunjungan.findMany({
     where: {
       id_kunjungan: id,
     },
@@ -46,12 +47,16 @@ const getRiwayat = async (id: string) => {
     },
   });
 
-  return res!;
+  if (res && res.length > 0) {
+    return res[0];
+  } else {
+    return null;
+  }
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
   const kunjungan = (await getKunjungan(params.id)) as Kunjungan;
-  const riwayat = (await getRiwayat(kunjungan.id)) as Riwayat[];
+  const riwayat = (await getRiwayat(kunjungan.id)) as Riwayat;
 
   return (
     <ClientLayout>
