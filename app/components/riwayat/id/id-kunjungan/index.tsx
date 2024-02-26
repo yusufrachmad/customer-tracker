@@ -12,8 +12,26 @@ export default function DetailKunjungan({
   riwayat,
 }: {
   kunjungan: Kunjungan;
-  riwayat: Riwayat[];
+  riwayat: Riwayat;
 }) {
+  if (riwayat === null) {
+    riwayat = {
+      id: "" as string,
+      id_kunjungan: kunjungan.id as string,
+      id_user: "" as string,
+      tgl_perubahan: kunjungan.tgl_kunjungan as Date,
+      tgl_kunjungan: kunjungan.tgl_kunjungan as Date,
+      tgl_resep: kunjungan.tgl_resep as Date,
+      alamat_faskes: kunjungan.alamat_faskes as string,
+      nama_dokter: kunjungan.nama_dokter as string,
+      file_penyerahan: kunjungan.file_penyerahan as string,
+      status: kunjungan.Pasien.status as string,
+      User: {
+        nama: "" as string,
+      },
+    };
+  }
+
   const router = useRouter();
   const active = kunjungan.Pasien.status === "aktif";
   const [toggle, setToggle] = useState(active);
@@ -45,6 +63,14 @@ export default function DetailKunjungan({
       console.error(error?.message);
       toast.error("Gagal mengubah data");
     }
+    setIsEditting(false);
+    setShowModal(false);
+    router.refresh();
+  };
+
+  const handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // toast.success("Berhasil menyimpan data");
     setIsEditting(false);
     setShowModal(false);
     router.refresh();
@@ -108,12 +134,12 @@ export default function DetailKunjungan({
               required
             />
             {String(kunjungan.tgl_kunjungan) !==
-              String(riwayat[0].tgl_kunjungan) && (
+              String(riwayat.tgl_kunjungan) && (
               <p className="text-sm">
                 <i>
-                  <s>{handleDate(String(riwayat[0].tgl_kunjungan))}</s> diedit
-                  oleh {riwayat[0].User.nama} pada{" "}
-                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  <s>{handleDate(String(riwayat.tgl_kunjungan))}</s> diedit oleh{" "}
+                  {riwayat.User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat.tgl_perubahan))}
                 </i>
               </p>
             )}
@@ -130,12 +156,12 @@ export default function DetailKunjungan({
               name="tgl_resep"
               required
             />
-            {String(kunjungan.tgl_resep) !== String(riwayat[0].tgl_resep) && (
+            {String(kunjungan.tgl_resep) !== String(riwayat.tgl_resep) && (
               <p className="text-sm">
                 <i>
-                  <s>{handleDate(String(riwayat[0].tgl_resep))}</s> diedit oleh{" "}
-                  {riwayat[0].User.nama} pada{" "}
-                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  <s>{handleDate(String(riwayat.tgl_resep))}</s> diedit oleh{" "}
+                  {riwayat.User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat.tgl_perubahan))}
                 </i>
               </p>
             )}
@@ -151,12 +177,11 @@ export default function DetailKunjungan({
               name="alamat_faskes"
               required
             />
-            {kunjungan.alamat_faskes !== riwayat[0].alamat_faskes && (
+            {kunjungan.alamat_faskes !== riwayat.alamat_faskes && (
               <p className="text-sm">
                 <i>
-                  <s>{riwayat[0].alamat_faskes}</s> diedit oleh{" "}
-                  {riwayat[0].User.nama} pada{" "}
-                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  <s>{riwayat.alamat_faskes}</s> diedit oleh {riwayat.User.nama}{" "}
+                  pada {handleTimestamp(String(riwayat.tgl_perubahan))}
                 </i>
               </p>
             )}
@@ -170,14 +195,13 @@ export default function DetailKunjungan({
                 defaultValue={kunjungan.file_penyerahan}
                 disabled={!isEditting}
                 name="file_penyerahan"
-                required
               />
-              {kunjungan.file_penyerahan !== riwayat[0].file_penyerahan && (
+              {kunjungan.file_penyerahan !== riwayat.file_penyerahan && (
                 <p className="text-sm">
                   <i>
-                    <s>{riwayat[0].file_penyerahan}</s> diedit oleh{" "}
-                    {riwayat[0].User.nama} pada{" "}
-                    {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                    <s>{riwayat.file_penyerahan}</s> diedit oleh{" "}
+                    {riwayat.User.nama} pada{" "}
+                    {handleTimestamp(String(riwayat.tgl_perubahan))}
                   </i>
                 </p>
               )}
@@ -194,12 +218,11 @@ export default function DetailKunjungan({
               name="nama_dokter"
               required
             />
-            {kunjungan.nama_dokter !== riwayat[0].nama_dokter && (
+            {kunjungan.nama_dokter !== riwayat.nama_dokter && (
               <p className="text-sm">
                 <i>
-                  <s>{riwayat[0].nama_dokter}</s> diedit oleh{" "}
-                  {riwayat[0].User.nama} pada{" "}
-                  {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  <s>{riwayat.nama_dokter}</s> diedit oleh {riwayat.User.nama}{" "}
+                  pada {handleTimestamp(String(riwayat.tgl_perubahan))}
                 </i>
               </p>
             )}
@@ -226,11 +249,11 @@ export default function DetailKunjungan({
               </div>
               <p className="text-md">Nonaktif</p>
             </div>
-            {kunjungan.Pasien.status !== riwayat[0].status && (
+            {kunjungan.Pasien.status !== riwayat.status && (
               <p className="text-sm">
                 <i>
-                  <s>{riwayat[0].status}</s> diedit oleh {riwayat[0].User.nama}{" "}
-                  pada {handleTimestamp(String(riwayat[0].tgl_perubahan))}
+                  <s>{riwayat.status}</s> diedit oleh {riwayat.User.nama} pada{" "}
+                  {handleTimestamp(String(riwayat.tgl_perubahan))}
                 </i>
               </p>
             )}
@@ -238,13 +261,13 @@ export default function DetailKunjungan({
         </div>
         <div className="flex ml-auto mr-20 mt-32 justify-end">
           {isEditting ? (
-            <div
+            <button
               className="bg-[#eddd4b] text-black rounded-md px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300 flex flex-col items-center"
               onClick={handleModalOpen}
             >
               <span>Simpan</span>
               <span>Perubahan</span>
-            </div>
+            </button>
           ) : (
             <div
               className="bg-red-600 text-white rounded-md p-3 px-16 border-1 border-gray-300 shadow-xl hover:bg-red-500 hover:cursor-pointer"
@@ -254,11 +277,11 @@ export default function DetailKunjungan({
             </div>
           )}
         </div>
-        {showModal && (
-          <Modal onClose={handleModalClose} onConfirm={handleModalClose}>
+        {/* {showModal && (
+          <Modal onClose={handleModalClose} onConfirm={handleConfirm}>
             Apakah Anda yakin ingin menyimpan perubahan?
           </Modal>
-        )}
+        )} */}
       </form>
     </>
   );
