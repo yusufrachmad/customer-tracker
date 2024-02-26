@@ -1,6 +1,6 @@
 "use client";
 import type { Kunjungan } from "@/app/riwayat/[id]/page";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateKunjungan } from "@/app/lib/actions/updateKunjungan";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -49,10 +49,11 @@ export default function DetailKunjungan({
 
     try {
       const data = new FormData(event.currentTarget);
-      const { success, message } = await updateKunjungan(data);
       data.append("status", status);
       data.append("id_kunjungan", kunjungan.id);
       data.append("id_pasien", kunjungan.Pasien.id);
+
+      const { success, message } = await updateKunjungan(data);
 
       if (!success) {
         toast.error(message);
@@ -68,13 +69,7 @@ export default function DetailKunjungan({
     router.refresh();
   };
 
-  const handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // toast.success("Berhasil menyimpan data");
-    setIsEditting(false);
-    setShowModal(false);
-    router.refresh();
-  };
+  const handleConfirm = () => {};
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -261,13 +256,13 @@ export default function DetailKunjungan({
         </div>
         <div className="flex ml-auto mr-20 mt-32 justify-end">
           {isEditting ? (
-            <button
-              className="bg-[#eddd4b] text-black rounded-md px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300 flex flex-col items-center"
+            <div
+              className="bg-[#eddd4b] text-black rounded-md px-10 border-1 border-gray-300 shadow-xl hover:bg-yellow-300 flex flex-col items-center hover:cursor-pointer"
               onClick={handleModalOpen}
             >
               <span>Simpan</span>
               <span>Perubahan</span>
-            </button>
+            </div>
           ) : (
             <div
               className="bg-red-600 text-white rounded-md p-3 px-16 border-1 border-gray-300 shadow-xl hover:bg-red-500 hover:cursor-pointer"
@@ -277,11 +272,11 @@ export default function DetailKunjungan({
             </div>
           )}
         </div>
-        {/* {showModal && (
+        {showModal && (
           <Modal onClose={handleModalClose} onConfirm={handleConfirm}>
             Apakah Anda yakin ingin menyimpan perubahan?
           </Modal>
-        )} */}
+        )}
       </form>
     </>
   );
