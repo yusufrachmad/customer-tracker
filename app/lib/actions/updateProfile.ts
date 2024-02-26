@@ -1,6 +1,7 @@
 "use server";
 import { authServerSession } from "../auth";
 import type { User } from "@prisma/client";
+import prisma from "../db";
 
 export const updateProfile = async (formData: FormData) => {
   const session = (await authServerSession()) as User | null;
