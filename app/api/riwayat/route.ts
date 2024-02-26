@@ -18,45 +18,53 @@ export const POST = async (Request: NextRequest) => {
       },
     });
 
-    let fetchResult = [] as any[];
+    let fetchResult = [] as any[] | undefined;
 
-    if (session?.role === "dinkes" || session?.role === "apoteker") {
-      const whereCondition = {
-        Apotek: {
-          id: apotekId?.id_apotek as string,
-        },
-        Pasien: {
-          [radio]: {
-            contains: search as string,
-          },
-        },
-      };
-
+    if (session?.role === "dinkes") {
       fetchResult = await prisma?.kunjungan.findMany({
         include: {
           Apotek: true,
           Apoteker: true,
           Pasien: true,
         },
-        where:
-          session?.role === "dinkes" ? whereCondition.Pasien : whereCondition,
+        where: {
+          Pasien: {
+            [radio]: {
+              contains: search as string,
+            },
+          },
+        },
+        orderBy: {
+          tgl_kunjungan: "desc",
+        },
+      });
+    } else if (session?.role === "apoteker") {
+      fetchResult = await prisma?.kunjungan.findMany({
+        include: {
+          Apotek: true,
+          Apoteker: true,
+          Pasien: true,
+        },
+        where: {
+          Apotek: {
+            id: apotekId?.id_apotek as string,
+          },
+          Pasien: {
+            [radio]: {
+              contains: search as string,
+            },
+          },
+        },
         orderBy: {
           tgl_kunjungan: "desc",
         },
       });
     }
 
-    if (fetchResult.length === 0) {
-      return NextResponse.json({
-        data: fetchResult,
-        success: false,
-      });
-    } else {
-      return NextResponse.json({
-        data: fetchResult,
-        success: true,
-      });
-    }
+    return NextResponse.json({
+      data: fetchResult,
+      success: true,
+    });
   } catch (error: any) {
     return NextResponse.json({
       error: error?.message,
