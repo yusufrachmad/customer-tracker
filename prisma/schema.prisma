@@ -61,7 +61,7 @@ model Pengawas {
   id            String @id @unique
   id_user       String
   nama_pengawas String
-  nip           Int
+  nip           String
   User          User   @relation(fields: [id_user], references: [id])
 }
 
@@ -94,7 +94,7 @@ model Kunjungan {
   tgl_resep               DateTime                  @db.Date
   nama_dokter             String
   alamat_faskes           String
-  file_penyerahan         String
+  file_penyerahan         String?
   Apotek                  Apotek                    @relation(fields: [id_apotek], references: [id])
   Apoteker                Apoteker                  @relation(fields: [id_apoteker], references: [id])
   Pasien                  Pasien                    @relation(fields: [id_pasien], references: [id])
