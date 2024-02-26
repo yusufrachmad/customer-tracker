@@ -115,7 +115,7 @@ export default function DaftarClient({
           <div className="col-span-1">
             <h1 className="text-l">Apotek</h1>
             <select
-              name="apotek_id"
+              name="id_apotek"
               className="w-96 h-12 border-2 border-gray-300 rounded-md p-2"
             >
               {apotek.map((apotek) => (

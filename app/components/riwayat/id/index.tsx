@@ -154,7 +154,7 @@ export default function RiwayatKunjungan({
                   <td className="bg-white border-b-4 border-[#f6f6f6] pt-3 pb-40">
                     <div className="flex justify-center py-3">
                       <Link
-                        href={kunj.file_penyerahan}
+                        href={kunj.file_penyerahan ?? "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

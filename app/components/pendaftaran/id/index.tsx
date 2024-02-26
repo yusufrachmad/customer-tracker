@@ -21,7 +21,7 @@ export default function KunjunganForm({ pasien }: { pasien: Pasien }) {
     try {
       const data = new FormData(e.currentTarget);
       data.append("id_pasien", pasien.id);
-      data.append("foto_penyerahan", blob);
+      data.append("file_penyerahan", blob);
       data.append("status", status);
 
       const { success, message } = await addKunjungan(data);
