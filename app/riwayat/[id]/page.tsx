@@ -1,6 +1,7 @@
 import ClientLayout from "@/app/components/client_layout";
 import RiwayatKunjungan from "@/app/components/riwayat/id";
 import type { Pasien, Apoteker, Apotek } from "@prisma/client";
+import prisma from "@/app/lib/db";
 
 export type Kunjungan = {
   id: string;

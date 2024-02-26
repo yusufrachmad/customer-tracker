@@ -1,6 +1,7 @@
 import ClientLayout from "@/app/components/client_layout";
 import KunjunganForm from "@/app/components/pendaftaran/id";
 import type { Pasien } from "@prisma/client";
+import prisma from "@/app/lib/db";
 
 const getPasien = async (id: string) => {
   const res = await prisma?.pasien.findUnique({
