@@ -1,5 +1,6 @@
 import { registerSchema } from "@/app/lib/validation";
 import { NextResponse } from "next/server";
+import prisma from "@/app/lib/db";
 
 export async function POST(request: Request) {
   try {
