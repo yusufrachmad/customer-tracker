@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            throw new Error("User tidak ditemukan");
+            throw new Error("Pengguna tidak ditemukan");
           }
 
           if (user.role === "apoteker" && user.status !== "terverifikasi") {
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (!passwordsMatch) {
-            throw new Error("Password salah");
+            throw new Error("Kata sandi salah");
           }
 
           return user as any;
@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
             error instanceof PrismaClientInitializationError ||
             error instanceof PrismaClientKnownRequestError
           ) {
-            throw new Error("Sistem error. Silahkan hubungi admin.");
+            throw new Error("Sistem galat. Silahkan hubungi admin.");
           }
 
           throw error;
@@ -120,6 +120,7 @@ export const authOptions: NextAuthOptions = {
             token: token.sessionToken,
           },
         });
+        cookies().delete("next-auth.session-token");
       }
     },
   },
